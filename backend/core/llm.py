@@ -4,9 +4,8 @@ import re
 
 
 def extract_json(text: str):
-    # Strip markdown fences
     text = re.sub(r"```(?:json)?", "", text).strip()
-    # Find JSON object
+    text = re.sub(r"```", "", text).strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if match:
         return match.group(0)
@@ -17,28 +16,23 @@ def analyze_code(prompt: str):
     response = requests.post(
         "http://localhost:11434/api/generate",
         json={
-            "model": "deepseek-coder:6.7b",
+            "model": "qwen2.5-coder:7b",
             "prompt": prompt,
             "stream": False,
             "options": {
-                "temperature": 0.1,       # low = more predictable output
-                "num_predict": 1024,
-            },
-            "stop": ["<|im_end|>", "<|im_start|>"]  # stop at chat tokens
+                "temperature": 0.1,
+                "num_predict": 2048,
+            }
         }
     )
 
     raw = response.json()["response"]
-
-    # The prompt ended with `{` so prepend it back
-    raw = "{" + raw
-
     json_str = extract_json(raw)
 
     if not json_str:
         return {
             "score": 0,
-            "issues": ["Model did not return JSON. Try a simpler/shorter code snippet."],
+            "issues": ["Model did not return valid JSON."],
             "improvements": [],
             "refactored_code": raw[:500]
         }
