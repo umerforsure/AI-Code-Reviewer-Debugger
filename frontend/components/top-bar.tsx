@@ -28,7 +28,7 @@ export function TopBar({
             <Code2 className="size-5" aria-hidden="true" />
           </div>
           <div className="leading-tight">
-            <h1 className="text-pretty text-sm font-semibold">AI Code Reviewer</h1>
+            <h1 className="text-pretty text-sm font-semibold">AI Code Reviewer & Debugger</h1>
             <p className="text-xs text-muted-foreground">Analyze, score &amp; refactor</p>
           </div>
         </div>
