@@ -34,10 +34,10 @@
 |---|---|
 | Frontend | Next.js 14, TypeScript, Tailwind CSS |
 | Backend | FastAPI (Python) |
-| AI Model | DeepSeek Coder 6.7B via Ollama |
+| AI Model | Qwen2.5 Coder 7B via Ollama |
 | Communication | REST API |
 
-**100% free and local** — the AI runs on your own machine via Ollama. No OpenAI key needed.
+**100% free and local** — the AI runs on your own machine via Ollama. No paid APIs needed.
 
 ---
 
@@ -55,14 +55,14 @@ Make sure you have these installed:
 
 ```bash
 git clone https://github.com/umerforsure/AI-Code-Reviewer-Debugger.git
-cd AI-Code-Reviewer
+cd AI-Code-Reviewer-Debugger
 ```
 
 ### 2. Set up Ollama and pull the model
 
 ```bash
 # Install Ollama from https://ollama.com then run:
-ollama pull deepseek-coder:6.7b
+ollama pull qwen2.5-coder:7b
 ```
 
 ### 3. Start the backend
@@ -104,9 +104,10 @@ Go to [http://localhost:3000](http://localhost:3000), paste your code, set a goa
 ## 📁 Project Structure
 
 ```
-AI-Code-Reviewer/
+AI-Code-Reviewer-Debugger/
 ├── backend/
 │   ├── main.py              # FastAPI app entry point
+│   ├── requirements.txt     # Python dependencies
 │   ├── api/
 │   │   └── routes.py        # /analyze endpoint
 │   └── core/
