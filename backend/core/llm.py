@@ -4,12 +4,18 @@ import re
 
 
 def extract_json(text: str):
+    # Strip markdown fences
     text = re.sub(r"```(?:json)?", "", text).strip()
     text = re.sub(r"```", "", text).strip()
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if match:
-        return match.group(0)
-    return None
+    
+    # Find the first { and last } and grab everything between
+    start = text.find("{")
+    end = text.rfind("}")
+    
+    if start == -1 or end == -1:
+        return None
+        
+    return text[start:end+1]
 
 
 def analyze_code(prompt: str):
@@ -21,7 +27,7 @@ def analyze_code(prompt: str):
             "stream": False,
             "options": {
                 "temperature": 0.1,
-                "num_predict": 2048,
+                "num_predict": 4096,
             }
         }
     )
@@ -39,10 +45,18 @@ def analyze_code(prompt: str):
 
     try:
         return json.loads(json_str)
-    except:
-        return {
-            "score": 0,
-            "issues": ["JSON parse failed. Model output was malformed."],
-            "improvements": [],
-            "refactored_code": raw[:500]
-        }
+    except json.JSONDecodeError as e:
+        # Try to fix truncated JSON by closing open brackets
+        try:
+            fixed = json_str
+            open_braces = fixed.count("{") - fixed.count("}")
+            open_brackets = fixed.count("[") - fixed.count("]")
+            fixed += "]" * open_brackets + "}" * open_braces
+            return json.loads(fixed)
+        except:
+            return {
+                "score": 0,
+                "issues": ["JSON parse failed. Model output was malformed."],
+                "improvements": [],
+                "refactored_code": raw[:500]
+            }
